@@ -129,7 +129,7 @@
   const cartCount = () => state.cart.reduce((a, i) => a + i.qty, 0);
   const cartTotal = () => state.cart.reduce((a, i) => a + i.qty * (findProduct(i.id)?.price || 0), 0);
   const isWished = (id) => state.wishlist.includes(id);
-  const priceFmt = new Intl.NumberFormat('ar-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 });
+  const priceFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 });
   const formatPrice = (amount) => priceFmt.format(amount);
 
   // UI: Toasts
