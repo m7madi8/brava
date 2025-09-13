@@ -18,12 +18,12 @@
   // Mock Products
   const PRODUCTS = [
     { id: 'airpods-1', name: 'AirPods Pro 2', price: 899, category: 'AirPods', color: 'white', rating: 4.8, reviews: [], images: [''], description: 'إلغاء ضوضاء نشط ووضع الشفافية.' },
-    { id: 'watch-1', name: 'Apple Watch Series 9', price: 1499, category: 'Apple Watch', color: 'black', rating: 4.7, reviews: [], images: [''], description: 'مزايا صحية ولياقة قوية.' },
-    { id: 'access-1', name: 'MagSafe Charger', price: 149, category: 'Accessories', color: 'gray', rating: 4.6, reviews: [], images: [''], description: 'شحن لاسلكي سريع للآيفون.' },
-    { id: 'watch-2', name: 'Apple Watch SE', price: 1099, category: 'Apple Watch', color: 'silver', rating: 4.4, reviews: [], images: [''], description: 'مزايا أساسية تبقيك على اتصال.' },
+    { id: 'watch-1', name: 'Apple Watch Series 9', price: 1499, category: 'Apple Watch', color: 'starlight', rating: 4.7, reviews: [], images: [''], description: 'مزايا صحية ولياقة قوية.' },
+    { id: 'access-1', name: 'MagSafe Charger', price: 149, category: 'Accessories', color: 'white', rating: 4.6, reviews: [], images: [''], description: 'شحن لاسلكي سريع للآيفون.' },
+    { id: 'watch-2', name: 'Apple Watch SE', price: 1099, category: 'Apple Watch', color: 'midnight', rating: 4.4, reviews: [], images: [''], description: 'مزايا أساسية تبقيك على اتصال.' },
     { id: 'airpods-2', name: 'AirPods 3', price: 649, category: 'AirPods', color: 'white', rating: 4.3, reviews: [], images: [''], description: 'صوت محيطي مع تتبع ديناميكي للرأس.' },
     { id: 'access-2', name: 'Apple Watch Band – Orange', price: 129, category: 'Accessories', color: 'orange', rating: 4.1, reviews: [], images: [''], description: 'سوار مريح وأنيق.' },
-    { id: 'airpods-max', name: 'AirPods Max', price: 1999, category: 'AirPods', color: 'silver', rating: 4.9, reviews: [], images: ['AirPods_Max_2024.webp'], description: 'صوت احترافي مع إلغاء ضوضاء نشط وتجربة فاخرة.' }
+    { id: 'airpods-max', name: 'AirPods Max', price: 1999, category: 'AirPods', color: 'orange', rating: 4.9, reviews: [], images: ['AirPods_Max_2024.webp'], description: 'صوت احترافي مع إلغاء ضوضاء نشط وتجربة فاخرة.' }
   ];
 
   // Blog posts data (Arabic content)
@@ -121,8 +121,7 @@
     theme: storage.get('brava_theme', 'dark'),
     consent: storage.get('brava_gdpr', null),
     views: storage.get('brava_views', {}), // {productId: count}
-    reviews: storage.get('brava_reviews', {}), // {productId: Review[]}
-    loyalty: storage.get('brava_loyalty', 0)
+    reviews: storage.get('brava_reviews', {}) // {productId: Review[]}
   };
 
   // Derived helpers
@@ -170,16 +169,17 @@
     if (isWished(id)) state.wishlist = state.wishlist.filter(x => x !== id); else state.wishlist.push(id);
     storage.set('brava_wishlist', state.wishlist);
     updateHeaderCounts();
+    updateWishButton(id);
     toast(isWished(id) ? 'تمت الإضافة إلى المفضلة' : 'تمت الإزالة من المفضلة');
   }
 
-  // Loyalty
-  function accrueLoyalty(amount) {
-    const points = Math.floor(amount * 0.05); // 5% back
-    state.loyalty += points;
-    storage.set('brava_loyalty', state.loyalty);
-    $('#loyaltyInfo').textContent = `ستكسب ${points} نقطة على هذا الطلب. الإجمالي: ${state.loyalty}`;
+  function updateWishButton(id) {
+    const buttons = $$(`[data-wish="${id}"]`);
+    buttons.forEach(btn => {
+      btn.innerHTML = isWished(id) ? '❤' : '🤍';
+    });
   }
+
 
   // Recommendations
   function recommend() {
@@ -209,6 +209,7 @@
       view.innerHTML = '';
       renderBlogPost(view, id);
       view.focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       updateHeaderCounts();
       return;
     }
@@ -216,11 +217,12 @@
     view.innerHTML = '';
     render(view);
     view.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     updateHeaderCounts();
   }
 
   const arabicCategory = (c) => ({ 'AirPods':'سماعات', 'Apple Watch':'ساعات', 'Accessories':'اكسسوارات', 'Sneakers':'أحذية' })[c] || c;
-  const arabicColor = (c) => ({ 'white':'أبيض', 'black':'أسود', 'orange':'برتقالي', 'gray':'رمادي', 'silver':'فضي' })[c] || c;
+  const arabicColor = (c) => ({ 'white':'أبيض', 'black':'أسود', 'orange':'برتقالي', 'gray':'رمادي', 'silver':'فضي', 'starlight':'ستارلايت', 'midnight':'منتصف الليل' })[c] || c;
 
   // Common UI helpers
   function productCard(p) {
@@ -289,10 +291,10 @@
       <section class="hero">
         <div class="hero-inner">
           <div class="hero-content">
-            <h1>AirPods Max — صوت احترافي بتصميم فاخر</h1>
+            <h1>AirPods Max — صوت احترافي بتصميم فاخر!</h1>
             <p>إلغاء الضوضاء النشط، صوت محيطي مع تتبّع الرأس، وراحة طوال اليوم.</p>
-            <div style="display:flex; gap:10px;">
-              <a href="#/products" class="btn btn-primary">تسوق AirPods Max</a>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <a href="#/products" class="btn btn-primary" data-qv="airpods-max">تسوق AirPods Max</a>
               <a href="#/about" class="btn btn-ghost">من نحن</a>
             </div>
           </div>
@@ -358,6 +360,15 @@
 
     view.innerHTML = `${hero}${featuredSection}${recoSection}`;
     bindProductCardEvents(view);
+    
+    // Bind hero button to open quick view
+    const heroBtn = $('[data-qv="airpods-max"]', view);
+    if (heroBtn) {
+      heroBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openQuickView('airpods-max');
+      });
+    }
   }
 
   function renderProducts(view) {
@@ -436,7 +447,7 @@
               </div>
               <div class="aboutX-cta">
                 <a href="#/products" class="btn btn-primary">ابدأ التسوّق</a>
-                <a href="https://instagram.com" target="_blank" rel="noopener" class="btn btn-ghost">تابعنا</a>
+                <a href="https://instagram.com/brava.pa" target="_blank" rel="noopener" class="btn btn-ghost">تابعنا</a>
               </div>
               <div class="aboutX-stats">
                 <div><strong>2500+</strong><small class="muted">عميل سعيد</small></div>
@@ -501,10 +512,57 @@
   }
 
   function renderPrivacy(view) {
+    const updated = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
     view.innerHTML = `
       <section class="section">
-        <h2>سياسة الخصوصية</h2>
-        <p class="muted">نحترم خصوصيتك. نستخدم ملفات تعريف الارتباط لتخصيص المحتوى وتحليل الزيارات.</p>
+        <div class="card policy">
+          <header class="policy-header">
+            <h2>سياسة الخصوصية</h2>
+            <div class="policy-meta muted">آخر تحديث: ${updated}</div>
+          </header>
+          <div class="policy-body">
+            <section class="policy-section">
+              <h3>مقدّمة</h3>
+              <p class="muted">نلتزم بحماية بياناتك. توضح هذه السياسة نوع البيانات التي نجمعها وكيف نستخدمها وحقوقك في التحكم بها.</p>
+            </section>
+            <section class="policy-section">
+              <h3>البيانات التي نجمعها</h3>
+              <ul>
+                <li>بيانات أساسية: الاسم ورقم الهاتف عند إتمام الطلب.</li>
+                <li>بيانات الاستخدام: الصفحات التي تزورها وتفضيلاتك لتحسين التجربة.</li>
+                <li>ملفات تعريف الارتباط (Cookies) لتذكّر إعداداتك مثل الثيم والمفضلة.</li>
+              </ul>
+            </section>
+            <section class="policy-section">
+              <h3>كيف نستخدم بياناتك</h3>
+              <ul>
+                <li>معالجة الطلبات وخدمة العملاء.</li>
+                <li>تحسين الأداء وتجربة التصفّح.</li>
+                <li>التواصل بشأن حالة الطلب والعروض ذات الصلة (اختياري).</li>
+              </ul>
+            </section>
+            <section class="policy-section">
+              <h3>المدفوعات والأمان</h3>
+              <p class="muted">لا نخزّن بيانات بطاقات الدفع على خوادمنا. تُعالَج المدفوعات عبر مزوّدين موثوقين بمعايير تشفير عالية.</p>
+            </section>
+            <section class="policy-section">
+              <h3>الاحتفاظ بالبيانات</h3>
+              <p class="muted">نحتفظ بالبيانات للمدد اللازمة نظاميًا وتشغيليًا فقط، ثم نحذفها أو نجهّلها بأمان.</p>
+            </section>
+            <section class="policy-section">
+              <h3>حقوقك</h3>
+              <ul>
+                <li>الوصول إلى بياناتك وطلب نسخة منها.</li>
+                <li>طلب التصحيح أو الحذف ضمن الإطار القانوني.</li>
+                <li>إلغاء الاشتراك من الرسائل التسويقية في أي وقت.</li>
+              </ul>
+            </section>
+            <section class="policy-section">
+              <h3>التواصل</h3>
+              <p class="muted">للاستفسارات، راسلنا عبر واتساب: <a href="https://wa.me/972566999990" target="_blank" rel="noopener">اضغط هنا</a>.</p>
+            </section>
+          </div>
+        </div>
       </section>`;
   }
 
@@ -522,7 +580,7 @@
   function bindProductCardEvents(ctx=document) {
     $$('[data-add]', ctx).forEach(btn => btn.addEventListener('click', () => addToCart(btn.getAttribute('data-add'))));
     $$('[data-qv]', ctx).forEach(btn => btn.addEventListener('click', () => openQuickView(btn.getAttribute('data-qv'))));
-    $$('[data-wish]', ctx).forEach(btn => btn.addEventListener('click', () => { toggleWish(btn.getAttribute('data-wish')); router(); }));
+    $$('[data-wish]', ctx).forEach(btn => btn.addEventListener('click', () => { toggleWish(btn.getAttribute('data-wish')); }));
   }
 
   // Quick View Modal
@@ -577,8 +635,11 @@
       if (isHidden) openMobileNav(); else closeMobileNav();
     });
   }
-  // close when navigating via mobile links or tel links
-  $$('#mobileNav [data-route], #mobileNav a[href^="tel:"]').forEach(a => a.addEventListener('click', closeMobileNav));
+  // close when navigating via mobile links (routes, tel, or hash routes like #/privacy)
+  $$('#mobileNav [data-route], #mobileNav a[href^="tel:"], #mobileNav a[href^="#/"]').forEach(a => a.addEventListener('click', closeMobileNav));
+  // close when tapping the mobile drawer overlay
+  const mobileOverlay = $('#mobileNav .drawer-overlay');
+  if (mobileOverlay) mobileOverlay.addEventListener('click', closeMobileNav);
   // close when pressing ESC
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeMobileNav();
@@ -602,9 +663,8 @@
         </div>
         <button class="btn btn-ghost" data-rem="${p.id}">إزالة</button>
       </div>`;
-    }).join('') || '<div class="muted">سلتك فارغة.</div>';
+    }).join('') || '<div class="muted">سلتك فارغة!</div>';
     $('#cartTotal').textContent = `${formatPrice(cartTotal())}`;
-    $('#loyaltyInfo').textContent = `اكسب 5% نقاط. الحالي: ${state.loyalty}`;
     $$('[data-inc]').forEach(b => b.addEventListener('click', () => changeQty(b.getAttribute('data-inc'), 1)));
     $$('[data-dec]').forEach(b => b.addEventListener('click', () => changeQty(b.getAttribute('data-dec'), -1)));
     $$('[data-rem]').forEach(b => b.addEventListener('click', () => removeFromCart(b.getAttribute('data-rem'))));
@@ -612,10 +672,9 @@
   $('#checkoutBtn').addEventListener('click', () => {
     if (!state.cart.length) return toast('السلة فارغة');
     const total = cartTotal();
-    accrueLoyalty(total);
     // Mock: Payment methods UI would go here; for now send WhatsApp confirmation
     const summary = state.cart.map(i => `${findProduct(i.id).name} ×${i.qty}`).join(', ');
-    const link = `https://wa.me/972000000000?text=${encodeURIComponent(`طلب من BRAVA.PA: ${summary}. الإجمالي ${formatPrice(total)}`)}`;
+    const link = `https://wa.me/972566999990?text=${encodeURIComponent(`طلب من BRAVA.PA: ${summary}. الإجمالي ${formatPrice(total)}`)}`;
     window.open(link, '_blank');
     state.cart = [];
     storage.set('brava_cart', state.cart);
@@ -667,6 +726,12 @@
   // Accessibility and minor inits
   function initHeaderYear() { $('#year').textContent = String(new Date().getFullYear()); }
   function initNav() { $$('[data-route]').forEach(a => a.addEventListener('click', () => setTimeout(router))); }
+  function updateHeaderHeightVar() {
+    const hdr = document.querySelector('.site-header');
+    if (!hdr) return;
+    const h = hdr.getBoundingClientRect().height;
+    document.documentElement.style.setProperty('--hdr-h', `${Math.round(h)}px`);
+  }
 
   // Lazy loading is native via loading=lazy; smooth scrolling via CSS
 
@@ -677,10 +742,23 @@
     applyTheme();
     initGDPR();
     initHeaderYear();
+    updateHeaderHeightVar();
     initNav();
     startCountdown(12);
     router();
+    // Hide WhatsApp float near footer
+    const wa = document.getElementById('whatsAppFloat');
+    const footer = document.querySelector('.site-footer');
+    if (wa && footer && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) wa.classList.add('is-hidden'); else wa.classList.remove('is-hidden');
+        });
+      }, { root: null, threshold: 0.01 });
+      io.observe(footer);
+    }
   });
+  window.addEventListener('resize', () => updateHeaderHeightVar());
 })();
 
 
