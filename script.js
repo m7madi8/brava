@@ -456,8 +456,7 @@
               </div>
             </div>
             <div class="aboutX-media">
-              <img src="brava_.png" alt="BRAVA.PA" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <div class="placeholder" style="display:none;"></div>
+              <div class="placeholder" style="display:block; background: linear-gradient(135deg, #FF6F00, #FF8F00); border-radius: 12px; width: 100%; min-height: 280px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">WEBSPIREX</div>
             </div>
           </div>
         </div>
