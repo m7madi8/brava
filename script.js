@@ -434,11 +434,11 @@
   function renderAbout(view) {
     view.innerHTML = `
       <section class="section">
-        <div class="about-header"><h2><span class="brand-mark">BRAVA</span><span class="brand-dot">.PA</span></h2><p class="muted">هوّيـة فاخرة وتجربة تسوّق مُتقنة</p></div>
+        <div class="about-header"><h2><span class="brand-mark">WEBSPIREX</span></h2><p class="muted">هوّيـة فاخرة وتجربة تسوّق مُتقنة</p></div>
         <div class="card aboutX">
           <div class="aboutX-grid">
             <div class="aboutX-copy">
-              <h3>لماذا برافا؟</h3>
+              <h3>لماذا ويبسبيريكس؟</h3>
               <p class="muted">نختار المنتجات بعناية، نُقدّم تغليفًا فاخرًا، وندعمك بخدمة سريعة وواضحة. هدفنا أن تكون تجربتك سهلة وممتعة من أول نقرة حتى وصول طلبك.</p>
               <div class="aboutX-features">
                 <div class="aboutX-feature"><span class="fx">✓</span><div><strong>أصلي 100%</strong><small class="muted">منتجات موثوقة مضمونة المصدر  </small></div></div>
@@ -674,7 +674,7 @@
     const total = cartTotal();
     // Mock: Payment methods UI would go here; for now send WhatsApp confirmation
     const summary = state.cart.map(i => `${findProduct(i.id).name} ×${i.qty}`).join(', ');
-    const link = `https://wa.me/972566999990?text=${encodeURIComponent(`طلب من BRAVA.PA: ${summary}. الإجمالي ${formatPrice(total)}`)}`;
+    const link = `https://wa.me/972566999990?text=${encodeURIComponent(`طلب من WEBSPIREX: ${summary}. الإجمالي ${formatPrice(total)}`)}`;
     window.open(link, '_blank');
     state.cart = [];
     storage.set('brava_cart', state.cart);
